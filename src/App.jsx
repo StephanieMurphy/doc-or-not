@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import shuffle from "lodash.shuffle";
 
 const docs = [
   { title: "Pathologist", isDoc: true },
@@ -17,21 +18,42 @@ const docs = [
   { title: "Psychologist", isDoc: false },
 ];
 
+const shuffledDocs = shuffle(docs);
+
 export default function App() {
   const [page, setPage] = useState(1);
   const [docNumber, setDocNumber] = useState(0);
-  const doc = docs[docNumber];
-  console.log(doc);
+  const doc = shuffledDocs[docNumber];
+  const [answers, setAnswers] = useState([]);
+  console.log(answers);
+
   return (
     <div>
       {page === 1 && <Page1 onStartClick={() => setPage(page + 1)} />}
       {page === 2 && (
         <Page2
           title={doc.title}
-          progressBar={1}
-          total={10}
+          progressBar={docNumber + 1}
+          total={shuffledDocs.length}
           description={"Smells"}
-          onDocClick={()=> setDocNumber(docNumber+1)}
+          onDocClick={() => {
+            if (docNumber === shuffledDocs.length - 1) {
+              setPage(page + 1);
+            } else {
+              setDocNumber(docNumber + 1);
+            }
+            setAnswers(answers.concat("Doc"));
+          }}
+          onNotClick={() => {
+            console.log(docNumber);
+
+            if (docNumber === shuffledDocs.length - 1) {
+              setPage(page + 1);
+            } else {
+              setDocNumber(docNumber + 1);
+            }
+            setAnswers(answers.concat("Not"));
+          }}
         />
       )}
     </div>
@@ -48,7 +70,15 @@ function Page1({ onStartClick }) {
     </div>
   );
 }
-function Page2({ onDocClick, title, progressBar, total, description }) {
+
+function Page2({
+  onDocClick,
+  onNotClick,
+  title,
+  progressBar,
+  total,
+  description,
+}) {
   return (
     <div>
       <div>Doc or Not</div>
@@ -58,7 +88,7 @@ function Page2({ onDocClick, title, progressBar, total, description }) {
       <div>{title}</div>
       <div>{description}</div>
       <button onClick={onDocClick}>Doc</button>
-      <button onClick={onDocClick} >Not</button>
+      <button onClick={onNotClick}>Not</button>
     </div>
   );
 }
