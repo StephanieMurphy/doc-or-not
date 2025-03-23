@@ -7,7 +7,7 @@ const docs = [
   { title: "Radiologist", isDoc: true },
   { title: "Psychiatrist", isDoc: true },
   { title: "Anaesthesiologist and anaesthetist", isDoc: true },
-  { title: "Chiropractor ", isDoc: false },
+  { title: "Chiropractor", isDoc: false },
   { title: "Dental surgeon", isDoc: false },
   { title: "Podiatric surgeon", isDoc: false },
   { title: "Medical writer", isDoc: false },
@@ -26,6 +26,7 @@ export default function App() {
   const doc = shuffledDocs[docNumber];
   const [answers, setAnswers] = useState([]);
   console.log(answers);
+  console.log(shuffledDocs);
 
   return (
     <div>
@@ -42,20 +43,19 @@ export default function App() {
             } else {
               setDocNumber(docNumber + 1);
             }
-            setAnswers(answers.concat("Doc"));
+            setAnswers(answers.concat(true));
           }}
           onNotClick={() => {
-            console.log(docNumber);
-
             if (docNumber === shuffledDocs.length - 1) {
               setPage(page + 1);
             } else {
               setDocNumber(docNumber + 1);
             }
-            setAnswers(answers.concat("Not"));
+            setAnswers(answers.concat(false));
           }}
         />
       )}
+      {page === 3 && <Page3 docs={shuffledDocs} answers={answers} />}
     </div>
   );
 }
@@ -89,6 +89,20 @@ function Page2({
       <div>{description}</div>
       <button onClick={onDocClick}>Doc</button>
       <button onClick={onNotClick}>Not</button>
+    </div>
+  );
+}
+
+function Page3({ docs, answers }) {
+  return (
+    <div>
+      {docs.map((doc) => (
+        <div key={doc.title}>
+          <div>{doc.title}</div>
+          <div>{doc.isDoc ? "Doc":"Not Doc"}</div>
+          <div> </div>
+        </div>
+      ))}
     </div>
   );
 }
